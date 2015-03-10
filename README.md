@@ -2,7 +2,7 @@
 
 Publish gh-pages like a breeze.
 
-# Usage
+## Usage
 
 Configure your `package.json`.
 
