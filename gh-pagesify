@@ -41,14 +41,19 @@ function collect_options() {
 
 function prepare_repository() {
   if [ ! -d $DEPLOY_DIR ]; then
-    git clone -b $GH_PAGES_BRANCH $REPO_URL $DEPLOY_DIR || (git clone $REPO_URL $DEPLOY_DIR && git checkout --orphan $GH_PAGES_BRANCH)
+    git ls-remote --exit-code $GH_PAGES_BRANCH
+    if [ $? eq 0 ]; then
+      git clone -b $GH_PAGES_BRANCH $REPO_URL $DEPLOY_DIR
+    else
+      git clone $REPO_URL $DEPLOY_DIR && git checkout --orphan $GH_PAGES_BRANCH
+    fi
   fi
 }
 
 function commit_and_push() {
   pushd $DEPLOY_DIR
 
-  git pull origin $GH_PAGES_BRANCH
+  git ls-remote --exit-code $GH_PAGES_BRANCH && git pull origin $GH_PAGES_BRANCH
   find . -not -path '*/\.*' -not -path '.' -delete
   cp ../$STATIC_DIR/* ./
   git add -A
