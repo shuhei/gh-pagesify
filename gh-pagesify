@@ -48,7 +48,7 @@ function prepare_repository() {
 function commit_and_push() {
   pushd $DEPLOY_DIR
 
-  git ls-remote --exit-code $GH_PAGES_BRANCH && git pull origin $GH_PAGES_BRANCH || git checkout --orphan $GH_PAGES_BRANCH
+  git ls-remote --exit-code origin $GH_PAGES_BRANCH && git pull origin $GH_PAGES_BRANCH || git checkout --orphan $GH_PAGES_BRANCH
   find . -not -path '*/\.*' -not -path '.' -delete
   cp -r ../$STATIC_DIR/* ./
   git add -A
