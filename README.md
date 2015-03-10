@@ -4,24 +4,26 @@ Publish gh-pages like a breeze.
 
 ## Usage
 
-Configure your `package.json`.
+1. `npm install -D gh-pagesify`
+2. Configure your `package.json`.
 
-```json
-{
-  "scripts": {
-    "deploy": "build_by_yourself && gh-pagesify"
-  },
-  "devDependencies": {
-    "gh-pagesify": "^0.1.0"
-  },
-  "gh-pages": {
-    "repository": "foo/bar",
-    "static": "public",
-    "deploy": "deploy",
-    "branch": "gh-pages"
-  }
-}
-```
+    ```json
+    {
+      // ...
+      "scripts": {
+        "build": "# Build static files into `public` directory.",
+        "deploy": "npm run build && gh-pagesify"
+      },
+      "gh-pages": {
+        "repository": "foo/bar",
+        "static": "public",
+        "deploy": "deploy",
+        "branch": "gh-pages"
+      }
+    }
+    ```
+
+3. `npm run deploy`
 
 ## Options
 
