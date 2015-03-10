@@ -1,6 +1,6 @@
 {
   "name": "gh-pagesify",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Publish gh-pages like a breeze.",
   "bin": "gh-pagesify",
   "scripts": {
