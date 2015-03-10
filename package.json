@@ -1,0 +1,21 @@
+{
+  "name": "gh-pagesify",
+  "version": "0.1.0",
+  "description": "Publish gh-pages like a breeze.",
+  "bin": "gh-pagesify",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gh-pages"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shuhei/gh-pagesify.git"
+  },
+  "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "json": "^9.0.3"
+  }
+}

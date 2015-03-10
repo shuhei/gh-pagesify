@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -e
+
+function collect_options() {
+  if [ -L $0 ]; then
+    BIN_PATH=`dirname $0`/`readlink $0`
+  else
+    BIN_PATH=$0
+  fi
+  JSON_PATH=`dirname $BIN_PATH`/node_modules/.bin/json
+
+  function find_option {
+    echo `cat $PWD/package.json | $JSON_PATH gh-pages.$1`
+  }
+
+  REPO=$(find_option 'repository')
+  if [ -z $REPO ]; then
+    echo 'Set "gh-pages"."repository" in package.json.'
+    exit 1
+  fi
+  REPO_URL="git@github.com:${REPO}.git"
+
+  STATIC_DIR=$(find_option 'static')
+  if [ -z $STATIC_DIR ]; then
+    STATIC_DIR=public
+  fi
+
+  DEPLOY_DIR=$(find_option 'deploy')
+  if [ -z $DEPLOY_DIR ]; then
+    DEPLOY_DIR=deploy
+  fi
+
+  GH_PAGES_BRANCH=$(find_option 'branch')
+  if [ -z $GH_PAGES_BRANCH ]; then
+    GH_PAGES_BRANCH=gh-pages
+  fi
+}
+
+function confirm() {
+  echo "[repository] $REPO_URL, [static dir] $STATIC_DIR, [deploy dir] $DEPLOY_DIR, [branch] $GH_PAGES_BRANCH"
+  read -p 'Are you sure you want to deploy? [Y/N]' -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+}
+
+function prepare_repository() {
+  if [ ! -d $DEPLOY_DIR ]; then
+    git clone -b $GH_PAGES_BRANCH $REPO_URL $DEPLOY_DIR || git clone $REPO_URL && git checkout --orphan $GH_PAGES_BRANCH
+  fi
+}
+
+function commit_and_push() {
+  pushd $DEPLOY_DIR
+
+  git pull origin $GH_PAGES_BRANCH
+  find . -not -path '*/\.*' -not -path '.' -delete
+  cp ../$STATIC_DIR/* ./
+  git add -A
+  TIMESTAMP=`date -u +"%F %T UTC"`
+  git commit -m "Site updated at ${TIMESTAMP}"
+  git push origin $GH_PAGES_BRANCH
+
+  popd
+}
+
+collect_options
+confirm
+prepare_repository
+commit_and_push
