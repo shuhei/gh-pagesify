@@ -41,12 +41,7 @@ function collect_options() {
 
 function prepare_repository() {
   if [ ! -d $DEPLOY_DIR ]; then
-    git ls-remote --exit-code $GH_PAGES_BRANCH
-    if [ $? eq 0 ]; then
-      git clone -b $GH_PAGES_BRANCH $REPO_URL $DEPLOY_DIR
-    else
-      git clone $REPO_URL $DEPLOY_DIR && git checkout --orphan $GH_PAGES_BRANCH
-    fi
+    git clone -b $GH_PAGES_BRANCH $REPO_URL $DEPLOY_DIR || (git clone $REPO_URL $DEPLOY_DIR && git checkout --orphan $GH_PAGES_BRANCH)
   fi
 }
 
@@ -55,7 +50,7 @@ function commit_and_push() {
 
   git ls-remote --exit-code $GH_PAGES_BRANCH && git pull origin $GH_PAGES_BRANCH
   find . -not -path '*/\.*' -not -path '.' -delete
-  cp ../$STATIC_DIR/* ./
+  cp -r ../$STATIC_DIR/* ./
   git add -A
   TIMESTAMP=`date -u +"%F %T UTC"`
   git commit -m "Site updated at ${TIMESTAMP}"
