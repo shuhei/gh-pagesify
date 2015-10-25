@@ -4,11 +4,12 @@ set -e
 
 function collect_options() {
   if [ -L $0 ]; then
-    BIN_PATH=`dirname $0`/`readlink $0`
+    BIN_PATH=`dirname $0`
   else
-    BIN_PATH=$0
+    echo 'Use the bin in `node_modules/.bin`'
+    exit 1
   fi
-  JSON_PATH=`dirname $BIN_PATH`/node_modules/.bin/json
+  JSON_PATH="$BIN_PATH/json"
 
   function find_option {
     echo `cat $PWD/package.json | $JSON_PATH gh-pages.$1`
